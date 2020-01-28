@@ -1,2 +1,2 @@
-# instructor-examples
-Data visualization examples
+# Instructor examples for Data Visualization
+
