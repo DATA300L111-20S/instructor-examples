@@ -1,0 +1,126 @@
+<!doctype html>
+<!--
+  Course: DATA 300L 111 Spring 2020
+  Author: Matthew Johnson
+-->
+<html lang="en">
+
+<head>
+  <title>Creating SVG charts by hand</title>
+  <meta charset="utf-8" />
+  <link href="svg-byhand.css" rel="stylesheet" />
+</head>
+
+<body>
+  <h1>Creating <abbr title="Scalable Vector Graphics">SVG</abbr> charts by hand</h1>
+  <p>Here are some simple charts showing data about courses in the Computing Technology curriculum.</p>
+  <section>
+    <h2>Horizontal Bar Chart</h2>
+    <figure>
+      <svg id="bar-chart" width="600" viewBox="0 0 35 6" preserveAspectRatio="none">
+        <rect width="27.333" height="1.6" />
+        <text x="1" y="1.2" text-anchor="start" fill="white">CMPT 120</text>
+        <text x="28.333" y="1.2" text-anchor="start">27.333</text>
+        <rect width="25.4" height="1.6" y="2" />
+        <text x="1" y="3.2" text-anchor="start" fill="white">CMPT 220</text>
+        <text x="26.4" y="3.2" text-anchor="start">25.4</text>
+        <rect width="22" height="1.6" y="4" />
+        <text x="1" y="5.2" text-anchor="start" fill="white">CMPT 221</text>
+        <text x="23" y="5.2" text-anchor="start">22</text>
+      </svg>
+      <figcaption>Average number of students per section in core programming courses for Spring 2020</figcaption>
+    </figure>
+  </section>
+  <section>
+    <h2>Line Graph</h2>
+    <figure>
+      <svg width="400" viewBox="0 0 25 10" preserveAspectRatio="none">
+        <g>
+          <text x="5" y="10" text-anchor="middle">F18</text>
+          <text x="10" y="10" text-anchor="middle">S19</text>
+          <text x="15" y="10" text-anchor="middle">F19</text>
+          <text x="20" y="10" text-anchor="middle">S20</text>
+        </g>
+        <g>
+          <!-- Since y-axis is inverted, use (29 - data) for the y-coordinate -->
+          <path d="M 5 2.667 L 10 2 L 15 2.667 L 20 3.667" />
+          <text x="5" y="1.667" text-anchor="middle">28.333</text>
+          <text x="10" y="1" text-anchor="middle">29</text>
+          <text x="15" y="1.667" text-anchor="middle">28.333</text>
+          <text x="20" y="2.667" text-anchor="middle">27.333</text>
+        </g>
+      </svg>
+      <figcaption>Average number of students in CMPT 120 by semester</figcaption>
+    </figure>
+  </section>
+  <section>
+    <h2>Scatter Plot</h2>
+    <figure>
+      <svg width="600" viewBox="0 0 35 12" preserveAspectRatio="none">
+        <g>
+          <text x="1" y="2.33" text-anchor="middle">8</text>
+          <text x="1" y="4.33" text-anchor="middle">6</text>
+          <text x="1" y="6.33" text-anchor="middle">4</text>
+          <text x="1" y="8.33" text-anchor="middle">2</text>
+          <text x="1" y="10.33" text-anchor="middle">0</text>
+          <rect x="2" y="8" width="0.5" height="0.05" />
+          <rect x="2" y="6" width="0.5" height="0.05" />
+          <rect x="2" y="4" width="0.5" height="0.05" />
+          <rect x="2" y="2" width="0.5" height="0.05" />
+        </g>
+        <g>
+          <rect x="2" y="10" width="30" height="0.05" />
+          <text x="5" y="12" text-anchor="middle">F17</text>
+          <text x="10" y="12" text-anchor="middle">S18</text>
+          <text x="15" y="12" text-anchor="middle">F18</text>
+          <text x="20" y="12" text-anchor="middle">S19</text>
+          <text x="25" y="12" text-anchor="middle">F19</text>
+          <text x="30" y="12" text-anchor="middle">S20</text>
+        </g>
+        <!-- Since y-axis is inverted, use (10 - data) for the y-coordinate -->
+        <g fill="#003f5c">
+          <circle cx="5" cy="3" r="0.3" />
+          <circle cx="10" cy="7" r="0.3" />
+          <circle cx="15" cy="4" r="0.3" />
+          <circle cx="20" cy="7" r="0.3" />
+          <circle cx="25" cy="4" r="0.3" />
+          <circle cx="30" cy="7" r="0.3" />
+        </g>
+        <g fill="#bc5090">
+          <circle cx="5" cy="9" r="0.3" />
+          <circle cx="10" cy="5" r="0.3" />
+          <circle cx="15" cy="9" r="0.3" />
+          <circle cx="20" cy="5" r="0.3" />
+          <circle cx="25" cy="9" r="0.3" />
+          <circle cx="30" cy="5" r="0.3" />
+        </g>
+        <g fill="#ffa600">
+          <circle cx="5" cy="5" r="0.3" />
+          <circle cx="10" cy="9" r="0.3" />
+          <circle cx="15" cy="6" r="0.3" />
+          <circle cx="20" cy="9" r="0.3" />
+          <circle cx="25" cy="6" r="0.3" />
+          <circle cx="30" cy="9" r="0.3" />
+        </g>
+      </svg>
+      <svg width="100" viewBox="0 0 7 8" preserveAspectRatio="none">
+        <text x="0" y="1" text-anchor="start">Legend</text>
+        <g fill="#003f5c">
+          <circle cx="1" cy="3" r="0.3" />
+          <text x="2" y="3.33" text-anchor="start">CMPT120</text>
+        </g>
+        <g fill="#bc5090">
+          <circle cx="1" cy="5" r="0.3" />
+          <text x="2" y="5.33" text-anchor="start">CMPT220</text>
+        </g>
+        <g fill="#ffa600">
+          <circle cx="1" cy="7" r="0.3" />
+          <text x="2" y="7.33" text-anchor="start">CMPT221</text>
+        </g>
+      </svg>
+      <figcaption>Number of sections of core programming classes by semester.</figcaption>
+    </figure>
+  </section>
+</body>
+
+</html>
