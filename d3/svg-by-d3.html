@@ -37,7 +37,7 @@
         .append("rect")
         .attr("x", 0)
         .attr("y", (d, i) => i * h / dataSpring20.length)
-        .attr("width", 10)
+        .attr("width", d => d["Avg Class Size"] * 17)
         .attr("height", 10)
     }
 
