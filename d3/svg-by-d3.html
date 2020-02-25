@@ -32,25 +32,33 @@
       const h = 100;
       const barChart = d3.select("#bar-chart").append("svg").attr("width", w).attr("height", h);
 
-      barChart
+      const bars = barChart
         .selectAll("rect")
         .data(dataSpring20)
         .enter()
+        .append("g");
+
+      bars
         .append("rect")
-        .attr("x", 0)
-        .attr("y", (d, i) => i * h / dataSpring20.length)
+        .attr("x", strokeWidth)
+        .attr("y", (d, i) => i * h / dataSpring20.length + strokeWidth)
         .attr("width", d => d["Avg Class Size"] * 17)
         .attr("height", h / dataSpring20.length - barSpacing)
         .style("stroke-width", strokeWidth);
 
-      barChart
-        .selectAll("text")
-        .data(dataSpring20)
-        .enter()
+      bars
         .append("text")
         .text(d => d["Avg Class Size"])
         .attr("x", d => d["Avg Class Size"] * 17 + 2 * barSpacing)
         .attr("y", (d, i) => i * h / dataSpring20.length + (h / dataSpring20.length / 2 + barSpacing))
+        .style("font-size", "12pt");
+
+      bars
+        .append("text")
+        .text(d => d["Course Number"])
+        .attr("x", 2 * barSpacing)
+        .attr("y", (d, i) => i * h / dataSpring20.length + (h / dataSpring20.length / 2 + barSpacing))
+        .style("fill", "white")
         .style("font-size", "12pt");
     }
 
