@@ -29,6 +29,16 @@
       const w = 600;
       const h = 100;
       const barChart = d3.select("#bar-chart").append("svg").attr("width", w).attr("height", h);
+
+      barChart
+        .selectAll("rect")
+        .data(dataSpring20)
+        .enter()
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", 10)
+        .attr("height", 10)
     }
 
   </script>
