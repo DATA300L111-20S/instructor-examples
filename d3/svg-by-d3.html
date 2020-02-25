@@ -32,6 +32,8 @@
       const w = 600;
       const h = 100;
       const barChart = d3.select("#bar-chart").append("svg").attr("width", w).attr("height", h);
+      d3.select("#bar-chart").append("figcaption")
+        .text("Average number of students per section in core programming courses for Spring 2020");
 
       const bars = barChart
         .selectAll("rect")
@@ -76,20 +78,7 @@
   <p>Here are some simple charts showing data about courses in the Computing Technology curriculum.</p>
   <section>
     <h2>Horizontal Bar Chart</h2>
-    <figure id="bar-chart">
-      <svg width="600" viewBox="0 0 35 6" preserveAspectRatio="none">
-        <rect width="27.333" height="1.6" />
-        <text x="1" y="1.2" text-anchor="start" fill="white">CMPT 120</text>
-        <text x="28.333" y="1.2" text-anchor="start">27.333</text>
-        <rect width="25.4" height="1.6" y="2" />
-        <text x="1" y="3.2" text-anchor="start" fill="white">CMPT 220</text>
-        <text x="26.4" y="3.2" text-anchor="start">25.4</text>
-        <rect width="22" height="1.6" y="4" />
-        <text x="1" y="5.2" text-anchor="start" fill="white">CMPT 221</text>
-        <text x="23" y="5.2" text-anchor="start">22</text>
-      </svg>
-      <figcaption>Average number of students per section in core programming courses for Spring 2020</figcaption>
-    </figure>
+    <figure id="bar-chart"></figure>
   </section>
   <section>
     <h2>Line Graph</h2>
