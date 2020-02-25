@@ -49,7 +49,7 @@
         .enter()
         .append("text")
         .text(d => d["Avg Class Size"])
-        .attr("x", 0)
+        .attr("x", d => d["Avg Class Size"] * 17 + 2 * barSpacing)
         .attr("y", (d, i) => i * h / dataSpring20.length + (h / dataSpring20.length / 2 + barSpacing))
         .style("font-size", "12pt");
     }
