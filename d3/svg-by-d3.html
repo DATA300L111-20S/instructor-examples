@@ -25,6 +25,7 @@
           "Avg Class Size": 22
         }
       ];
+      const collegeAvgClassSize = 22;
 
       const barSpacing = 5;
       const strokeWidth = 2;
@@ -44,6 +45,11 @@
         .attr("y", (d, i) => i * h / dataSpring20.length + strokeWidth)
         .attr("width", d => d["Avg Class Size"] * 17)
         .attr("height", h / dataSpring20.length - barSpacing)
+        .style("fill", d => {
+          const overUnder = d["Avg Class Size"] - collegeAvgClassSize;
+          const saturation = Math.round(100 * 2 * overUnder / collegeAvgClassSize);
+          return "hsl(0," + saturation + "%,50%)";
+        })
         .style("stroke-width", strokeWidth);
 
       bars
