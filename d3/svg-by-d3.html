@@ -10,6 +10,13 @@
   <meta charset="utf-8" />
   <link href="svg-by-d3.css" rel="stylesheet" />
   <script src="lib/d3.js"></script>
+  <script>
+    window.onload = () => {
+      const w = 600;
+      const h = 100;
+      const barChart = d3.select("#bar-chart").append("svg").attr("width", w).attr("height", h);
+    }
+  </script>
 </head>
 
 <body>
