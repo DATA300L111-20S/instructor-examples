@@ -12,10 +12,25 @@
   <script src="lib/d3.js"></script>
   <script>
     window.onload = () => {
+      const dataSpring20 = [{
+          "Course Number": "CMPT 120",
+          "Avg Class Size": 27.333
+        },
+        {
+          "Course Number": "CMPT 220",
+          "Avg Class Size": 25.4
+        },
+        {
+          "Course Number": "CMPT 221",
+          "Avg Class Size": 22
+        }
+      ];
+
       const w = 600;
       const h = 100;
       const barChart = d3.select("#bar-chart").append("svg").attr("width", w).attr("height", h);
     }
+
   </script>
 </head>
 
@@ -129,4 +144,6 @@
       <figcaption>Number of sections of core programming classes by semester.</figcaption>
     </figure>
   </section>
-</body></html>
+</body>
+
+</html>
