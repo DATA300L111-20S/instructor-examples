@@ -1,0 +1,41 @@
+svg {
+  background-color: #eee;
+  border: 1px solid lightgray;
+  padding: 1em;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#bar-chart rect {
+  stroke: darkgreen;
+  fill: green;
+  stroke-width: 0.1;
+}
+
+path {
+  stroke: #003f5c;
+  fill: none;
+  stroke-width: 0.25;
+}
+
+text {
+  font-family: sans-serif;
+  font-size: 1px;
+}
+
+body {
+  counter-reset: fignum;
+}
+
+figure {
+  counter-increment: fignum;
+}
+
+figcaption {
+  font-style: italic;
+  margin-top: 0.5em;
+}
+
+figcaption:before {
+  content: "Figure "counter(fignum) ". ";
+}
