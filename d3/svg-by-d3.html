@@ -119,6 +119,28 @@
         .datum(dataCMPT120)
         .attr("class", "line")
         .attr("d", line);
+
+      const labels = lineChart
+        .selectAll("g")
+        .data(dataCMPT120)
+        .enter()
+        .append("g");
+
+      labels.append("text")
+        .text(d => d["Semester"])
+        .attr("x", d => termToInt(d))
+        .attr("y", 10)
+        .attr("text-anchor", "middle")
+        .style("fill", "black")
+        .style("font-size", "1px");
+
+      labels.append("text")
+        .text(d => d["Avg Class Size"])
+        .attr("x", d => termToInt(d))
+        .attr("y", d => 30 - d["Avg Class Size"])
+        .attr("text-anchor", "middle")
+        .style("fill", "black")
+        .style("font-size", "1px");
     }
   </script>
 </head>
