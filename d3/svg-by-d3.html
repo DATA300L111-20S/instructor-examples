@@ -105,6 +105,17 @@
         .y(function(d) {
           return d["Avg Class Size"];
         });
+
+      const lineChart = d3.select("#line-chart")
+        .append("svg")
+        .attr("width", 400)
+        .attr("viewBox", "0 20 25 10")
+        .attr("preserveAspectRatio", "none");
+
+      lineChart.append("path")
+        .datum(dataCMPT120)
+        .attr("class", "line")
+        .attr("d", line);
     }
   </script>
 </head>
