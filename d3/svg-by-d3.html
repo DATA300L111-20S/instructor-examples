@@ -86,6 +86,20 @@
           "Avg Class Size": 27.333
         }
       ];
+
+      const termToInt = d => {
+        switch (d["Semester"]) {
+          case "F18":
+            return 5;
+          case "S19":
+            return 10;
+          case "F19":
+            return 15;
+          case "S20":
+            return 20;
+        };
+      }
+
     }
   </script>
 </head>
@@ -118,8 +132,6 @@
         <g>
           <text x="20" y="10" text-anchor="middle">S20</text>
           <text x="20" y="2.667" text-anchor="middle">27.333</text>
-        </g>
-        <g>
         </g>
       </svg>
       <figcaption>Average number of students in CMPT 120 by semester</figcaption>
