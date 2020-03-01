@@ -103,14 +103,17 @@
       const line = d3.line()
         .x(termToInt)
         .y(function(d) {
-          return d["Avg Class Size"];
+          return 31 - d["Avg Class Size"];
         });
 
       const lineChart = d3.select("#line-chart")
         .append("svg")
         .attr("width", 400)
-        .attr("viewBox", "0 20 25 10")
+        .attr("viewBox", "0 0 25 10")
         .attr("preserveAspectRatio", "none");
+
+      d3.select("#line-chart").append("figcaption")
+        .text("Average number of students in CMPT 120 by semester.");
 
       lineChart.append("path")
         .datum(dataCMPT120)
