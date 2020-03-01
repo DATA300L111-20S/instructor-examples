@@ -100,6 +100,11 @@
         };
       }
 
+      const line = d3.line()
+        .x(termToInt)
+        .y(function(d) {
+          return d["Avg Class Size"];
+        });
     }
   </script>
 </head>
