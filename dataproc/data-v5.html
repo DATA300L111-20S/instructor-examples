@@ -1,0 +1,396 @@
+<!doctype html>
+<!--
+  Course: DATA 300L 111 Spring 2020
+  Author: Matthew Johnson
+-->
+<html lang="en">
+
+<head>
+  <title>Loading and Pre-processing Data in D3v5</title>
+  <meta charset="utf-8" />
+  <style>
+    html {
+      font-size: 120%;
+      background-color: #eee;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: sans-serif;
+      color: #239;
+    }
+
+    section pre {
+      display: inline-block;
+      width: 640px;
+      height: 128px;
+      overflow: auto;
+      background-color: #ddd;
+      color: #222;
+      border: 1px solid #999;
+      border-radius: 2px;
+    }
+  </style>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+  <h1>Loading and Pre-processing Data in D3v5</h1>
+  <p>
+    Note: Please keep your browser's Console open when viewing this page, as
+    exploring the console output is essential to understanding this example.
+  </p>
+  <section id="population">
+    <h2>U.S. Population in 2010 by Age/Gender</h2>
+    <p>Here is the population data before (left) and after (right) processing. The result is the aggregated population data in ten-year bins.</p>
+    <pre class="before"></pre>
+    <pre class="after"></pre>
+    <p>Sources:</p>
+    <ul>
+      <li><cite><a href="https://github.com/jdorfman/awesome-json-datasets">J. Dorfman's repository of Awesome JSON Datasets</a></cite></li>
+      <li><cite>http://api.population.io/1.0/population/2010/United%20States/?format=json</cite></li>
+    </ul>
+  </section>
+  <section id="covid">
+    <h2>COVID-19 Historical Data</h2>
+    <p>Here is the coronavirus data before (left) and after (right) processing. The result is a time series of day-to-day changes in counts for Australia (all provinces aggregated together).</p>
+    <pre class="before"></pre>
+    <pre class="after"></pre>
+    <p>Sources:</p>
+    <ul>
+      <li><cite><a href="https://covid-19-apis.postman.com/">Postman COVID-19 API Resource Center</a></cite></li>
+      <li><cite>https://corona.lmao.ninja/v2/historical</cite></li>
+    </ul>
+  </section>
+  <section id="resources">
+    <h2>Helpful resources</h2>
+    <ul>
+      <li><a href="https://zellwk.com/blog/looping-through-js-objects/">Looping through objects in JavaScript</a> by Zell Liew</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript Array Reference</a> by Mozilla Developer Network</li>
+    </ul>
+  </section>
+
+  <script>
+    /*
+      Load some data sets and perform some simple (or not-so-simple) pre-processing.
+     */
+    window.onload = () => {
+      populationLoadTest();
+      covidLoadTest();
+    }
+
+    /* ---------------- U.S. Population Data (2010) ---------------- */
+
+    /*
+      Exploration of U.S. Population data set
+      https://github.com/jdorfman/awesome-json-datasets
+      http://api.population.io/1.0/population/2010/United%20States/?format=json
+
+      This data set has a simple tabular structure represented as an array of
+      simple objects. Each object represents a particular demographic age-year
+      among of U.S. residents and includes population figures split by gender.
+      Here's what the JSON structure looks like:
+        [
+         {
+           "females": 1966000,
+           "country": "United States",
+           "age": 0,
+           "males": 2054000,
+           "year": 2010,
+           "total": 4019000
+         },
+           ...
+         {
+           "females": 51200,
+           "country": "United States",
+           "age": 100,
+           "males": 9570,
+           "year": 2010,
+           "total": 60800
+         },
+        ]
+      Notice that there are redundant features such as "country" and "year",
+      which have identical values for all items. This is because this data is
+      a slice of a larger historical data set spanning many years and
+      including other countries. We might also think that "total" is redundant
+      because it can be derived from "females" and "males"; however, it turns
+      out that in a few cases the sum of "females" and "males"does not equal
+      the "total"... that observation on the condition of the data might be
+      useful.
+
+      Another feature of this data is that there are 101 items, from age 0 to
+      age 100. This might be a lot for a viewer to take in, and if we choose a
+      view like a histogram then 101 bars is probably not very readable.
+
+      We can pre-process this data to accomplish some of the cleanup and
+      transformation described above:
+     */
+    function populationLoadTest() {
+      // load a local data set from a CSV file on disk
+      d3.json("./data/population-2010.json")
+        .then(rawData => {
+          console.log("Raw population data:");
+          console.log(rawData);
+
+          console.log("Checking data condition...");
+          const mismatchCount = checkTotals(rawData);
+          console.log("    found " + mismatchCount + " mismatches.");
+
+          console.log("Trimming out redundant attributes...");
+          const trimmedData = removeCountryAndYear(rawData);
+
+          console.log("Consolidating ages into 10-year bins...");
+          const processedData = consolidateAges(trimmedData);
+
+          console.log("Processed population data:");
+          console.log(processedData);
+
+          printItems(rawData, d3.select("#population pre.before"));
+          printItems(processedData, d3.select("#population pre.after"));
+        });
+
+      // Detect dubious/inconsistent values
+      function checkTotals(data) {
+        return data.reduce((runningCount, d) => {
+          if (d.total === d.females + d.males)
+            return runningCount;
+          else
+            return runningCount + 1;
+        }, 0);
+      }
+
+      // Remove unneeded, redundant attributes
+      function removeCountryAndYear(data) {
+        // Note: shorter but this operation modifies the original data objects
+        //data.forEach(d => {
+        //  delete d.country; // remove the redundant country attribute
+        //  delete d.year; // remove the redundant year attribute
+        //});
+        // Note: makes a new array and does NOT change the original objects
+        return data.map(d => {
+          const {
+            country,
+            year,
+            ...rest
+          } = d;
+          return rest;
+        });
+      }
+
+      // Derive the population figure for larger age brackets
+      function consolidateAges(data) {
+        // Derive data for consolidated 10-year bins as a new array
+        // Note: this does not change the original data array
+        return data.reduce((newData, d) => {
+          // is the next age evenly divisible by 10?
+          if (d.age % 10 == 0) { // if so, then start a new bin
+            // update "age" attribute of previous bin to reflect the start-end of the age range
+            if (newData.length > 0) {
+              newData[newData.length - 1].age += "-" + (d.age - 1); // adds "-9", "-19", etc. to previous bin's age
+            }
+            newData.push(d); // create bin from the starting age of that bin (e.g., age "0")
+          } else { // if not, add to the current bin
+            // note that newData.length - 1 is the index of the last/most recent element added to acc
+            newData[newData.length - 1].females += d.females; // add next females popn figure to the current bin
+            newData[newData.length - 1].males += d.males; // add next males popn figure to the current bin
+            newData[newData.length - 1].total += d.total; // add next total popn figure to the current bin
+          }
+          return newData; // return the updated newData value
+        }, []); // the empty array here is the initial value for newData
+      }
+    }
+
+    /* ---------------- COVID-19 Data Set (Updated daily) ---------------- */
+
+    /*
+      Exploration of COVID historical data set
+      https://corona.lmao.ninja/v2/historical
+
+      This data set is an array of objects, each representing a country and/or
+      province in a country. Each data object has a "timeline" property that
+      contains time series data. The time series data are themselves objects
+      that include daily counts of cases/deaths/recovered. Here is what that
+      structure looks like - notice the dates are the attribute names of the
+      cases/deaths/recovered objects.
+        [
+         {
+           "country": "Afghanistan",
+           "province": null,
+           "timeline": {
+             "cases": { "1/22/20": 0, ..., "3/31/20": 174 },
+             "deaths": { "1/22/20": 0, ..., "3/31/20": 4 },
+             "recovered": { "1/22/20": 0, ..., "3/31/20": 5 }
+           }
+         },
+         {
+           "country": "Albania",
+           "province": null,
+           "timeline": {
+             "cases": { "1/22/20": 0, ..., "3/31/20": 243 },
+             "deaths": { "1/22/20": 0, ..., "3/31/20": 15 },
+             "recovered": { "1/22/20": 0, ..., "3/31/20": 52 }
+           }
+         },
+         ...
+        ]
+      When working in D3, it's much simpler if our series to be stored in
+      arrays. A simpler structure for use in D3 might be something like
+        [
+         {
+           "country": "Afghanistan",
+           "province": null,
+           "timeline": [
+             { "date": "1/22/20", "cases": 0, "deaths": 0, "recovered": 0 },
+               ...
+             { "date": "3/31/20", "cases": 174, "deaths": 4, "recovered": 5 }
+           ]
+         },
+         {
+           "country": "Albania",
+           "province": null,
+           "timeline": [
+             { "date": "1/22/20", "cases": 0, "deaths": 0, "recovered": 0 },
+               ...
+             { "date": "3/31/20", "cases": 243, "deaths": 15, "recovered": 52 }
+           ]
+         },
+         ...
+        ]
+      Notice how the "timeline" property is now an array, and each element in
+      that array is an object with four attributes - "date", "cases", "deaths",
+      and "recovered". The transformation of the original JSON structure to
+      this new, more D3-friendly structure is another example of the kind of
+      pre-processing we can do in JavaScript.
+
+      Additionally, as this is a very large data set, we might be interested
+      only in looking at data for a single country - e.g., Australia. There
+      are several items relating to Australia because each of its provinces is
+      included separately. Extracting an array of the Australian province data
+      might be another useful operation.
+
+      Finally, we might be interested not the absolute counts but in the day-
+      to-day changes in counts in a timeline. This would be an example of a
+      transformation and yields what we refer to as derived data.
+
+      We can process this data to perform some of the tasks described above:
+     */
+    function covidLoadTest() {
+      // load a remote data set from a URL
+      d3.json("https://corona.lmao.ninja/v2/historical")
+        .then(rawData => {
+          console.log("Raw COVID data:");
+          console.log(rawData);
+
+          console.log("Getting data for Australia only...");
+          const aussieData = sliceByCountry(rawData, "Australia");
+
+          console.log("Converting timeline objects into D3-friendly arrays...");
+          aussieData.forEach(provinceData => {
+            provinceData.timeline = convertTimelineToArray(provinceData.timeline);
+          });
+          console.log(aussieData);
+
+          console.log("Consolidate provinces into one object...");
+          const consolidatedData = consolidateProvinces(aussieData);
+
+          const processedData = getDailyChanges(consolidatedData.timeline);
+
+          console.log("Processed COVID data:");
+          console.log(processedData);
+
+          printItems(rawData, d3.select("#covid pre.before"));
+          printItems(processedData, d3.select("#covid pre.after"));
+        });
+
+      // Slice out only those records that relate to the specified country
+      function sliceByCountry(data, countryName) {
+        // copy only the data items for Australian provinces
+        return data.reduce((newData, d) => {
+          if (d.country === countryName)
+            newData.push(d);
+          return newData;
+        }, []);
+      }
+
+      /*
+        Takes a `timeline` object and re-structures it as an array of objects,
+        where each object has "date", "cases", "deaths", and "recoveries" attributes.
+        Important: This assumes that `cases`, `deaths`, and `recoveries` all have
+        exactly the same number of values (i.e., dates). It's possible to handle less
+        well-conditioned data, but it requires a bit more complexity.
+      */
+      function convertTimelineToArray(timeline) {
+        const dates = Object.keys(timeline.cases); // extract the dates from the `cases` object
+        const cases = Object.values(timeline.cases); // extract the counts from the `cases` object
+        const deaths = Object.values(timeline.deaths); // extract the counts from the `deaths` object
+        const recovered = Object.values(timeline.recovered); // extract the counts from the `recovered` object
+        // create a new array containing objects of the form `{ date: _, cases: _, deaths: _, recovered: _ }`
+        return dates.map((d, i) => {
+          return {
+            "date": d,
+            "cases": cases[i],
+            "deaths": deaths[i],
+            "recovered": recovered[i]
+          };
+        });
+      }
+
+      // Merge data for separate provinces into one object for the country
+      // Note: Only produces valid result if all data are for the same country!
+      function consolidateProvinces(provincesData) {
+        // Note: this does not change the original data
+        const countryData = {
+          country: provincesData[0].country,
+          // copy the first province timeline
+          timeline: provincesData[0].timeline.map(d => Object.assign({}, d))
+        };
+        provincesData.forEach(province => {
+          province.timeline.forEach((d, i) => {
+            // skip the first province since we counted it already!
+            if (i > 0) {
+              // add in the cases/deaths/recoveries from next province
+              countryData.timeline[i].cases += d.cases;
+              countryData.timeline[i].deaths += d.recovered;
+              countryData.timeline[i].recovered += d.recovered;
+            }
+          });
+        });
+        return countryData;
+      }
+
+      // Derive the intra-day differences for attributes in a timeline series.
+      // Note: We rename the timeline attributes to reflect the new meaning.
+      function getDailyChanges(timeline) {
+        return timeline.reduce((diffs, d) => {
+          // if we have something in the diffs array...
+          if (diffs.length > 0) {
+            // update the previous item to compute the intra-day difference
+            diffs[diffs.length - 1].date = d.date;
+            diffs[diffs.length - 1].newCases = d.cases - diffs[diffs.length - 1].newCases;
+            diffs[diffs.length - 1].newDeaths = d.deaths - diffs[diffs.length - 1].newDeaths;
+            diffs[diffs.length - 1].newRecovered = d.recovered - diffs[diffs.length - 1].newRecovered;
+          }
+          // copy and rename attributes from next datum in the timeline series
+          diffs.push({
+            newCases: d.cases,
+            newDeaths: d.deaths,
+            newRecovered: d.recovered
+          });
+          return diffs;
+        }, []);
+      }
+    }
+
+    function printItems(data, elem) {
+      data.forEach(d => {
+        if (elem) {
+          elem.text(elem.text() + JSON.stringify(d) + "\n");
+        } else {
+          console.log(d);
+        }
+      });
+    }
+  </script>
+
+</body></html>
