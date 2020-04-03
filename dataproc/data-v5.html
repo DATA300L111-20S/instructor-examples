@@ -31,6 +31,7 @@
       border: 1px solid #999;
       border-radius: 2px;
     }
+
   </style>
   <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
@@ -293,6 +294,7 @@
 
           console.log("Consolidate provinces into one object...");
           const consolidatedData = consolidateProvinces(aussieData);
+          console.log(consolidatedData);
 
           const processedData = getDailyChanges(consolidatedData.timeline);
 
@@ -306,11 +308,7 @@
       // Slice out only those records that relate to the specified country
       function sliceByCountry(data, countryName) {
         // copy only the data items for Australian provinces
-        return data.reduce((newData, d) => {
-          if (d.country === countryName)
-            newData.push(d);
-          return newData;
-        }, []);
+        return data.filter(d => d.country === countryName);
       }
 
       /*
@@ -328,7 +326,7 @@
         // create a new array containing objects of the form `{ date: _, cases: _, deaths: _, recovered: _ }`
         return dates.map((d, i) => {
           return {
-            "date": d,
+            "date": d, // d is the same as dates[i]
             "cases": cases[i],
             "deaths": deaths[i],
             "recovered": recovered[i]
@@ -345,18 +343,18 @@
           // copy the first province timeline
           timeline: provincesData[0].timeline.map(d => Object.assign({}, d))
         };
-        provincesData.forEach(province => {
+        return provincesData.reduce((countryData, province) => {
           province.timeline.forEach((d, i) => {
             // skip the first province since we counted it already!
             if (i > 0) {
               // add in the cases/deaths/recoveries from next province
               countryData.timeline[i].cases += d.cases;
-              countryData.timeline[i].deaths += d.recovered;
+              countryData.timeline[i].deaths += d.deaths;
               countryData.timeline[i].recovered += d.recovered;
             }
           });
-        });
-        return countryData;
+          return countryData;
+        }, countryData);
       }
 
       // Derive the intra-day differences for attributes in a timeline series.
@@ -366,7 +364,7 @@
           // if we have something in the diffs array...
           if (diffs.length > 0) {
             // update the previous item to compute the intra-day difference
-            diffs[diffs.length - 1].date = d.date;
+            diffs[diffs.length - 1].date = d.date; // associate the difference with the latter date
             diffs[diffs.length - 1].newCases = d.cases - diffs[diffs.length - 1].newCases;
             diffs[diffs.length - 1].newDeaths = d.deaths - diffs[diffs.length - 1].newDeaths;
             diffs[diffs.length - 1].newRecovered = d.recovered - diffs[diffs.length - 1].newRecovered;
@@ -382,6 +380,8 @@
       }
     }
 
+    // Print to the page a list of objects each on its own line.
+    // To convert objects to text, we use JavaScript Object Notation (JSON).
     function printItems(data, elem) {
       data.forEach(d => {
         if (elem) {
@@ -391,6 +391,9 @@
         }
       });
     }
+
   </script>
 
-</body></html>
+</body>
+
+</html>
