@@ -1,0 +1,181 @@
+<!doctype html>
+<!--
+  Course: DATA 300L 111 Spring 2020
+  Author: Matthew Johnson
+-->
+<html lang="en">
+
+<head>
+  <title>D3 Visualization with basic user interactions</title>
+  <meta charset="utf-8" />
+  <link href="styles/interactive.css" rel="stylesheet" type="text/css" />
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+  <h1>D3 Visualization with basic user interactions</h1>
+  <section id="population">
+    <h2>U.S. Population in 2010 by Age</h2>
+    <p>We can identify in the chart below that Millenials (ages 10-29) and Generation X (ages 30-49) make up the bulk of the U.S. population in the year 2010. There seem to be fewer children being born, judging by the number under age 10, and only a relative few live until 100.</p>
+    <p>Hover over any bar to see the population count. Click to select and highlight for easier comparison. Double-click to drill down and see a break-down of individual years within the 10-year bin (and double-click again to return to the original view).</p>
+    <figure id="bar-chart"></figure>
+    <h3>Sources</h3>
+    <ul>
+      <li><cite><a href="https://github.com/jdorfman/awesome-json-datasets">J. Dorfman's repository of Awesome JSON Datasets</a></cite></li>
+    </ul>
+  </section>
+  <section id="resources">
+    <h2>Helpful resources</h2>
+    <ul>
+      <li><a href="https://github.com/d3/d3/wiki">D3 Wiki</a> Documentation</li>
+      <li><a href="http://using-d3js.com/08_01_events.html">Chapter 08: Events</a> from Using D3.js</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events">Introduction to Events</a> by Mozilla Developer Network</li>
+    </ul>
+  </section>
+
+  <script>
+    /* Load/process U.S. Population data set and then build a bar chart. */
+    window.onload = () => {
+      // load a local data set from a CSV file on disk
+      d3.json("./data/population-2010.json")
+        .then(rawData => {
+          const trimmedData = removeCountryAndYear(rawData);
+          makeBarChart(trimmedData);
+        });
+
+      /* Remove unneeded, redundant attributes. */
+      function removeCountryAndYear(data) {
+        return data.map(d => {
+          const {
+            country,
+            year,
+            ...rest
+          } = d;
+          return rest;
+        });
+      }
+    }
+
+    /* Derive the population figure for larger age brackets. */
+    function consolidateAges(data) {
+      return data.reduce((newData, d) => {
+        if (d.age % 10 == 0) {
+          if (newData.length > 0) {
+            newData[newData.length - 1].age += "-" + (d.age - 1);
+          }
+          newData.push({
+            ...d
+          });
+        } else {
+          newData[newData.length - 1].females += d.females;
+          newData[newData.length - 1].males += d.males;
+          newData[newData.length - 1].total += d.total;
+        }
+        return newData;
+      }, []);
+    }
+
+    /* Extract a subset of the data items by age range. */
+    function sliceAges(data, bin) {
+      const [start, end] = bin.split("-");
+      return data.filter(d => d.age >= start && d.age <= end);
+    }
+
+    /* Construct a bar chart from the data set. */
+    function makeBarChart(data) {
+      const barChart = d3.select("#bar-chart").append("svg");
+
+      d3.select("#bar-chart").append("figcaption")
+        .text("Unted States population in 2010 by age.");
+
+      barChart.params = {
+        width: 800,
+        height: 400,
+        barSpacing: 5,
+        textGap: 10,
+        leftPadding: 40,
+        rightPadding: 100
+      };
+
+      barChart
+        .attr("width", barChart.params.width)
+        .attr("height", barChart.params.height);
+
+      // create Y axis
+      const yAxis = d3.axisLeft();
+
+      barChart.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + barChart.params.leftPadding + ",0)");
+
+      displayItems(barChart, data);
+
+      /* render the desired subset of the data */
+      function displayItems(barChart, data, bin) {
+        if (bin) {
+          selectedData = sliceAges(data, bin);
+        } else {
+          selectedData = consolidateAges(data);
+        }
+
+        const yScale = d3.scaleBand()
+          .domain(selectedData.map(d => d.age))
+          .range([0, barChart.params.height])
+          .paddingInner(0.1)
+          .paddingOuter(0.1);
+
+        const xScale = d3.scaleLinear()
+          .domain([0, d3.max(selectedData.map(d => d.total))])
+          .range([2, barChart.params.width - barChart.params.rightPadding]);
+
+        const bars = barChart.selectAll("g.bar")
+          .remove()
+          .exit()
+          .data(selectedData)
+          .enter()
+          .append("g")
+          .attr("class", "bar")
+          .attr("transform",
+            d => "translate(0," + yScale(d.age) + ")"
+          )
+          .on("click", toggleSelected)
+          .on("dblclick", (d) => {
+            if (Number.isInteger(d.age))
+              displayItems(barChart, data);
+            else
+              displayItems(barChart, data, d.age);
+          });
+
+        function toggleSelected() {
+          if (d3.select(this).attr("class") === "bar")
+            d3.select(this).attr("class", "bar selected");
+          else
+            d3.select(this).attr("class", "bar");
+        };
+
+        bars
+          .append("rect")
+          .attr("x", barChart.params.leftPadding + 1)
+          .attr("width", d => xScale(d.total))
+          .attr("height", yScale.bandwidth())
+          .style("stroke-width", barChart.params.strokeWidth);
+
+        bars
+          .append("text")
+          .text(d => (d.total / 1000000).toFixed(2) + "M")
+          .attr("x", d => xScale(d.total) + barChart.params.leftPadding + barChart.params.textGap)
+          .attr("y", yScale.bandwidth() / 2)
+          .attr("text-anchor", "start")
+          .attr("alignment-baseline", "central")
+          .style("font-size", "10pt")
+
+        yAxis.scale(yScale);
+        barChart.select(".axis").call(yAxis);
+      }
+    }
+
+  </script>
+
+</body>
+
+</html>
