@@ -10,49 +10,16 @@ h3 {
   color: #239;
 }
 
-g.bar text {
-  visibility: hidden;
+g.bar {
+  user-select: none;
 }
 
 g.bar rect {
   fill: #222;
 }
 
-g.bar:hover text,
-g.bar.selected text {
-  visibility: visible;
-}
-
-g.bar:hover rect {
-  fill: #223399;
-}
-
-g.bar.selected rect {
-  fill: #df7f18;
-}
-
-g.bar.selected:hover rect {
-  fill: #ee9d46;
-}
-
-body {
-  counter-reset: fignum;
-}
-
-figure {
-  counter-increment: fignum;
-}
-
-figcaption {
-  font-style: italic;
-  margin-top: 0.5em;
-}
-
-figcaption:before {
-  content: "Figure "counter(fignum) ". ";
-}
-
-text {
+g.bar text {
   font-family: sans-serif;
+  font-size: 10pt;
   fill: #222;
 }
