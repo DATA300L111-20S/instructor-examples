@@ -133,13 +133,15 @@ function buildLegend() {
     .attr("id", "legend")
     .attr("transform", "translate(40," + (chartParams.height - 80) + ")");
 
-  legend.append("text").text("0%");
+  legend.append("text").text("0%")
+    .attr("y", 16);
   legend.append("text").text("50%")
-    .attr("x", 250);
+    .attr("x", 250)
+    .attr("y", 16);
   legend.append("text").text("Below-basic prose literacy")
+    .attr("text-anchor", "middle")
     .attr("x", 140)
-    .attr("y", 30)
-    .attr("text-anchor", "middle");
+    .attr("y", 40);
   legend.append("rect")
     .attr("x", 40)
     .attr("height", 20)
@@ -212,6 +214,9 @@ function initializeGradients() {
   seqGradient.append("stop")
     .attr("offset", "0%")
     .attr("style", "stop-color:" + color(0) + ";stop-opacity:1");
+  seqGradient.append("stop")
+    .attr("offset", "50%")
+    .attr("style", "stop-color:" + color(25) + ";stop-opacity:1");
   seqGradient.append("stop")
     .attr("offset", "100%")
     .attr("style", "stop-color:" + color(50) + ";stop-opacity:1");

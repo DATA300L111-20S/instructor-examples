@@ -23,11 +23,6 @@ svg {
   background-color: #bef;
 }
 
-/* Styling for the chart legend */
-#legend text {
-  alignment-baseline: hanging;
-}
-
 /* Styling for the reader guide */
 #guide {
   position: absolute;
