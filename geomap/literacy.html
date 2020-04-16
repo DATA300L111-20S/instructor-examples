@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>D3: Setting path fills dynamically to generate a choropleth</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link href="css/literacy.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <h1>D3 Thematic Map with Color Scales</h1>
+
+  <section>
+    <h2>Literacy in New York State</h2>
+    <p>In this demo we examine a data set from the 2003 National Assesssment of Adult Literacy. We were curious about adult literacy rates in our home state of New York, and decided to approach this by looking at the <em>prose literacy</em> rate across New York counties. We decided to include only the proportion of adults with <em>Below Basic</em> level prose literacy, and chose a color palette that highlights those counties with the highest illiteracy rates. Clicking on the chart will bring up additional details, which are updated as you hover over each county. Finally, you can switch to an alternate color palette that conveys for each county how it fares relative to the national prose illiteracy rate.</p>
+    <figure id="choropleth">
+      <aside id="details">
+        <h3>No selection</h3>
+      </aside>
+      <form id="guide">
+        <label id="viewControl"><input type="checkbox" />Compare to 14% national avg.</label>
+        <p>Click map to <strong>show</strong> details</p>
+      </form>
+    </figure>
+    <h3>Data Sources</h3>
+    <ul>
+      <li><cite><a href="https://nces.ed.gov/naal/estimates/StateEstimates.aspx">National Center for Education Statistics - State Estimates</a></cite></li>
+    </ul>
+  </section>
+
+  <section id="resources">
+    <h2>Coding resources</h2>
+    <ul>
+      <li><a href="https://www.d3indepth.com/geographic/">Geographic | D3 in Depth</a> by Peter Cook</li>
+      <li><a href="https://medium.com/@amy.degenaro/introduction-to-digital-cartography-geojson-and-d3-js-c27f066aa84">Introduction to Digital Cartography</a> by Amy Degenaro</li>
+      <li><a href="https://medium.com/@mbostock/command-line-cartography-part-1-897aa8f8ca2c">Introduction to Command-Line Cartography</a> by Mike Bostock</li>
+      <li><a href="https://colorbrewer2.org/">Color Brewer 2.0</a> by Cynthia Brewer, et al.</li>
+      <li><a href="https://github.com/d3/d3/wiki">D3 Wiki</a> Documentation</li>
+    </ul>
+  </section>
+
+  <script src="js/literacy.js"></script>
+</body>
+
+</html>

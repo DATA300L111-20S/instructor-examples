@@ -1,0 +1,67 @@
+/* General styling for the page */
+html {
+  font-size: 120%;
+  background-color: #eee;
+}
+
+h1,
+h2,
+h3 {
+  font-family: sans-serif;
+  color: #239;
+}
+
+/* Allows the use of absolute positioning on descendants */
+figure {
+  position: relative;
+}
+
+/* General styling for the chart */
+svg {
+  cursor: crosshair;
+  border: 1px solid #999;
+  background-color: #bef;
+}
+
+/* Styling for the chart legend */
+#legend text {
+  alignment-baseline: hanging;
+}
+
+/* Styling for the reader guide */
+#guide {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  padding: 0 0.5em;
+  font-style: italic;
+}
+
+/* Styling for the detail annotations */
+#details {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  border-radius: 2px;
+  border: 1px solid #999;
+}
+
+#details h3 {
+  font-size: 100%;
+}
+
+/* Styling for the the map regions */
+path {
+  stroke-width: 1px;
+  stroke: #999;
+  fill: #eee;
+}
+
+/* Styling for foreground regions (the NYS counties) */
+path.fg {
+  stroke: #633;
+}
+
+path.fg:hover {
+  stroke-width: 3px;
+}
