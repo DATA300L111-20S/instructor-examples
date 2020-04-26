@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Techniques for Composition</title>
+  <link href="css/compose.css" rel="stylesheet" type="text/css" />
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+
+  <header>
+
+    <h1>Techniques for Composition using CSS and D3</h1>
+
+  </header>
+
+  <main>
+
+    <section>
+      <h2>Illiteracy in New York State</h2>
+      <p>Based on estimates from the 2003 National Assessment of Adult Literacy, we can see that illiteracy rates in most counties across New York State are below the national average of 14%. However, with an estimated illiteracy rate of 22%, New York state as a whole is signifanctly higher than the national average. We can see from the charts here that this is due to the high proportion of adults with below-basic literacy levels in the most populous urban counties in and around NYC.</p>
+      <p>This example demonstrates composition using standard Web technologies such as HTML+CSS along with special purpose libraries such as D3 and SimpleStatistics. Layout is largely controlled by CSS rules, together with some D3.js scales and positioning. Arrangment of data within the bar chart is managed via JavaScript and D3.js.</p>
+    </section>
+
+    <figure id="bar-chart">
+      <section class="guide">
+        <h3>Reader guide</h3>
+        <p>Click anywhere on the bar chart to switch between alphabetical and numerical sorting.</p>
+        <p>Hover over any county to highlight it in all charts.</p>
+      </section>
+    </figure>
+
+    <aside>
+      <h2>Mapping illiteracy</h2>
+      <figure id="small-multiples"></figure>
+    </aside>
+
+  </main>
+
+  <footer>
+
+    <h3>Sources</h3>
+    <ul>
+      <li><cite><a href="https://nces.ed.gov/naal/estimates/StateEstimates.aspx">National Center for Education Statistics - State Estimates</a></cite></li>
+      <li><cite><a href="https://github.com/deldersveld/topojson">https://github.com/deldersveld/topojson</a></cite></li>
+    </ul>
+
+  </footer>
+
+  <script src="js/compose.js" type="module"></script>
+</body>
+
+</html>

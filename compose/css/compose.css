@@ -1,0 +1,241 @@
+/* Load custom fonts from Google Fonts library. */
+
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans&display=swap');
+
+/* General styling for the whole page */
+
+html {
+  font-size: 120%;
+  font-family: 'EB Garamond', serif;
+  background-color: #eee;
+  overflow-y: scroll;
+}
+
+body {
+  padding: 0 2%;
+  margin: 0;
+}
+
+/* Layout the top-level containers */
+
+header {
+  text-align: center;
+}
+
+main {
+  display: flex;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Layout the columns of main content */
+
+main > section {
+  flex: 1;
+}
+
+main > figure {
+  flex: 3;
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+main > aside {
+  flex: 1;
+  text-align: center;
+}
+
+/* Style section headings for readability */
+
+h1,
+h2,
+h3 {
+  font-family: 'Public Sans', sans-serif;
+  color: #239;
+}
+
+/* Style the reader guide */
+
+figure .guide {
+  position: absolute;
+  background-color: #fff;
+  border-radius: 0.5em;
+  padding: 0 1em;
+  width: 40%;
+  right: 10%;
+  bottom: 5%;
+  opacity: 0.1;
+  transition: opacity 1s;
+}
+
+figure:hover .guide {
+  opacity: 1;
+}
+
+/* Style the sources list */
+
+footer li {
+  display: inline-block;
+  margin-right: 1em;
+}
+
+/* General styling for all charts */
+
+svg text {
+  font-family: 'Public Sans', sans-serif;
+}
+
+/* Styling for the bar chart */
+
+#bar-chart svg {
+  width: 100%;
+}
+
+#bar-chart text {
+  font-size: 9pt;
+  text-anchor: start;
+}
+
+#bar-chart .bar rect {
+  stroke: #eee;
+  stroke-width: 1px;
+}
+
+#bar-chart .bar text {
+  dominant-baseline: central;
+  visibility: hidden;
+}
+
+#bar-chart .reference line {
+  stroke-opacity: 0.5;
+  stroke-dasharray: 4, 3;
+  stroke: #4d9221;
+}
+
+#bar-chart .reference text {
+  text-anchor: middle;
+  fill: #4d9221;
+}
+
+/* Styling for small multiples geographic maps */
+
+#small-multiples {
+  display: flex;
+  flex-direction: column;
+  margin: 5% 10%;
+  background-color: #ddd;
+  border-radius: 0.5em;
+}
+
+#small-multiples svg {
+  cursor: cursor;
+  margin: 2em;
+  font-size: 9pt;
+  dominant-baseline: central;
+}
+
+#small-multiples text.title {
+  text-transform: capitalize;
+  font-size: 12pt;
+}
+
+/* Styling for the map legends */
+
+#small-multiples .legend text {
+  text-anchor: end;
+}
+
+/* Styling for the map regions */
+
+#small-multiples path {
+  stroke: #666;
+  stroke-width: 1px;
+}
+
+/* Styles for interactive highlighting */
+
+#small-multiples path:hover,
+#small-multiples path.focus {
+  stroke: #444;
+  stroke-width: 2px;
+  /* works in Firefox only */
+  filter: saturate(150%);
+}
+
+svg .focus {
+  font-weight: bold;
+  font-size: 10pt !important;
+}
+
+#bar-chart .unfocus {
+  opacity: 0.2;
+  transition: opacity 1s;
+}
+
+#bar-chart .focus rect {
+  stroke-width: 1px;
+  /* works in Firefox only */
+  filter: saturate(120%);
+}
+
+#bar-chart .focus text {
+  visibility: visible !important;
+}
+
+/* Media queries for responsive design */
+
+@media screen and (max-width: 960px) {
+
+  /* Switch to vertical flow for small screens */
+  main {
+    flex-direction: column;
+  }
+
+  /* Align heading to top of footer on small screen */
+  footer {
+    align-items: flex-start;
+    margin-top: 1em;
+  }
+
+  /* Revert to bullets for reability when vertical */
+  footer li {
+    display: list-item;
+    list-style-type: circle;
+  }
+
+  /* Maximize bar chart size by collapsing margins */
+  main > figure {
+    margin: 0;
+    margin-bottom: 2%;
+  }
+
+  /* Switch to horizontal flow on small screens */
+  #small-multiples {
+    flex-direction: row;
+    margin: 0;
+    padding: 0.5em;
+  }
+
+  /* Maximize map sizes while still preserving separations */
+  #small-multiples svg {
+    width: 100%;
+    margin: 1em;
+  }
+
+}
+
+@media (hover: none) {
+  figure .guide {
+    opacity: 1;
+    position: static;
+    width: auto;
+    padding: 0.5em 1em;
+    margin-bottom: 1em;
+  }
+}
