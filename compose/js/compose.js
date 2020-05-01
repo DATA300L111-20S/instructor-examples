@@ -1,3 +1,4 @@
+// Load the simple-statistic library as an E6 module
 import {
   ckmeans
 } from "https://unpkg.com/simple-statistics@7.0.8/index.js?module";
@@ -13,10 +14,10 @@ const NATIONAL_AVG = 14;
 
 // Collection of colorblind-friendly color palettes
 const palettes = {
-  blue: ["#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d"],
-  magenta: ["#f1eef6", "#d7b5d8", "#df65b0", "#dd1c77", "#980043"],
-  diverging: ["#4dac26", "#b8e186", "#f7f7f7", "#f1b6da", "#d01c8b"],
-  binary: ["#d4b9da", "#df65b0", "#980043"],
+  blue: d3.schemePuBu[5],
+  magenta: d3.schemePuRd[5],
+  diverging: d3.schemePiYG[5].reverse(),
+  magentaNarrow: d3.schemePuRd[6].filter((c, i) => i % 2 == 1)
 };
 
 // Once all of the data loads, we can build our chart
@@ -31,7 +32,7 @@ Promise.all([dataPromise, nysMapPromise])
  * JSON map features - that were loaded and passed along from the Promises.
  */
 function buildCharts([csvData, json]) {
-  makeBarChart(csvData, palettes.binary);
+  makeBarChart(csvData, palettes.magentaNarrow);
 
   const data = unifyData(json.features, csvData);
   const mapParams = configureMap(json);
@@ -45,8 +46,6 @@ function buildCharts([csvData, json]) {
 
 /*
  * Main function that creates and display the chart.
- * Input to this function is a list of the three data sets
- * that were loaded and passed along from the Promises.
  */
 function makeBarChart(data, colorScheme) {
   // Establish basic parameters for sizing and layout
@@ -85,7 +84,7 @@ function makeBarChart(data, colorScheme) {
   const color = d3.scaleThreshold()
     .domain(thresholds).range(colorScheme);
 
-  // Marks whose horizontal size encoded the illiteracy rate
+  // Groups to hold the bar marks and their labels
   const bars = barChart.selectAll("g.bar")
     .data(data)
     .enter()
@@ -104,7 +103,7 @@ function makeBarChart(data, colorScheme) {
     .on("mouseover", highlightCounty)
     .on("mouseout", clearHighlighting);
 
-  // Marks whose horizontal size encodes the illiteracy rate
+  // Data labels for the bars
   bars.append("text")
     .text(d => d.Illiteracy + "%")
     .attr("x", d => xScale(d.Illiteracy) + params.labelGap)
@@ -121,14 +120,13 @@ function makeBarChart(data, colorScheme) {
   // Reference line annotation
   const refline = barChart.append("g")
     .attr("class", "reference")
-    .attr("transform", "translate(" + (xScale(NATIONAL_AVG) + params.padLeft) + ")");
+    .attr("transform", "translate(" + (xScale(NATIONAL_AVG) + params.padLeft) + "," + params.labelGap + ")")
   // Draw the line
   refline.append("line")
-    .attr("y1", 15)
+    .attr("y1", 2)
     .attr("y2", params.height);
   // Label the line
   refline.append("text")
-    .attr("y", "10")
     .text("National Average")
 
   // Register an event listener for sorting the data items
@@ -182,6 +180,7 @@ function makeBarChart(data, colorScheme) {
       .attr("width", d => xScale(d.Illiteracy))
     bars.selectAll("text")
       .attr("x", d => xScale(d.Illiteracy) + params.labelGap)
+    refline.attr("transform", "translate(" + (xScale(NATIONAL_AVG) + params.padLeft) + "," + params.labelGap + ")")
   }
 }
 
@@ -235,6 +234,13 @@ function makeMap(features, title, attrib, colorScheme, params) {
   const map = d3.select("#small-multiples").append("svg")
     .attr("viewBox", "0 0 " + params.width + " " + params.height)
 
+  // Map title positioned at the upper-left
+  map.append("text")
+    .attr("class", "title")
+    .attr("x", 10)
+    .attr("y", 10)
+    .text(title);
+
   const thresholds = getNaturalThresholds(
     features.map(d => d.properties[attrib]),
     colorScheme.length
@@ -243,13 +249,6 @@ function makeMap(features, title, attrib, colorScheme, params) {
   // Define a threshold scale to color the map features
   const color = d3.scaleThreshold()
     .domain(thresholds).range(colorScheme);
-
-  // Map title positioned at the upper-left
-  map.append("text")
-    .attr("class", "title")
-    .attr("x", 10)
-    .attr("y", 10)
-    .text(title);
 
   // Bind data and create one path per GeoJSON feature (i.e., NYS county)
   map.selectAll("path")
@@ -262,52 +261,53 @@ function makeMap(features, title, attrib, colorScheme, params) {
     .on("mouseout", clearHighlighting)
 
   // Create and attach a legend for this map
-  makeLegend(map, attrib, color, params);
+  makeLegend(map, attrib, colorScheme, thresholds, params);
 }
 
 /*
  * Create a simple legend at the bottom of the chart.
  */
-function makeLegend(map, attrib, color, params) {
+function makeLegend(map, attrib, colorScheme, thresholds, params) {
   // Define a vertical scale for the legend
   const yScale = d3.scaleBand()
-    .domain([...color.domain().keys()])
+    .domain(colorScheme)
     .range([params.height, 0])
-    .paddingInner(0)
     .paddingOuter(1);
 
   // Add the legend to the map as a group
   const legend = map.append("g")
     .attr("class", "legend")
-    .attr("transform", "translate(" + (params.width - 20) + ",10)");
+    .attr("transform", "translate(" + (params.width - 20) + ",0)");
 
   // Color bands for the legend based on the color scale
   legend.selectAll("rect")
-    .data(color.range())
+    .data(colorScheme)
     .enter()
     .append("rect")
     .attr("x", 4)
-    .attr("y", (d, i) => yScale(i))
+    .attr("y", d => yScale(d))
     .attr("width", 10)
     .attr("height", yScale.bandwidth())
-    .style("fill", d => d);
+    .style("fill", d => d)
+    .on("mouseover", highlightBand)
+    .on("mouseout", clearBand);
 
   // Threshold labels for the transitions between bands
   legend.selectAll("text")
-    .data(color.domain())
+    .data(thresholds)
     .enter()
     .append("text")
-    .attr("y", (d, i) => yScale(i))
+    .attr("y", (d, i) => yScale(colorScheme[i]))
     .text(d => formatDataLabel(attrib, d));
 
   // Lower bound label
   legend.append("text")
-    .attr("y", yScale(0) + yScale.bandwidth())
+    .attr("y", params.height - yScale.bandwidth())
     .text(formatDataLabel(attrib, 0));
 
   // Upper bound label
   legend.append("text")
-    .attr("y", 0)
+    .attr("y", yScale.bandwidth())
     .text("Above");
 }
 
@@ -343,7 +343,7 @@ function highlightCounty() {
 
   const paths = d3.selectAll("#small-multiples path");
   paths
-    .attr("class", d => d.properties.NAME === county ? "focus" : "");
+    .attr("class", d => d.properties.NAME === county ? "focus" : "unfocus");
 
   d3.selectAll("#small-multiples path.focus").raise();
 }
@@ -353,11 +353,46 @@ function highlightCounty() {
  * This function dynamically removes class names to disable CSS styles.
  */
 function clearHighlighting() {
-  d3.select("#bar-chart svg").selectAll(".bar")
-    .attr("class", "bar");
   d3.selectAll("#small-multiples path")
     .attr("class", "");
+  d3.selectAll("#bar-chart .bar")
+    .attr("class", "bar");
   d3.selectAll("#bar-chart .tick .focus")
+    .attr("class", "");
+}
+
+/*
+ *
+ */
+function highlightBand() {
+  const activeMap = this.parentNode.parentNode;
+  const band = d3.select(this).style("fill");
+
+  const matchingCounties = [];
+  d3.select(activeMap).selectAll("path")
+    .each(function (d, i) {
+      const fill = d3.select(this).style("fill");
+      if (fill === band)
+        matchingCounties.push(d.properties.NAME);
+    });
+
+  d3.selectAll("#small-multiples path")
+    .attr("class", (d, i) => {
+      return matchingCounties.includes(d.properties.NAME) ? "" : "unfocus";
+    });
+
+  d3.selectAll("#small-multiples rect")
+    .attr("class", function () {
+      const fill = d3.select(this).style("fill");
+      return fill !== band ? "unfocus" : "";
+    });
+}
+
+/*
+ *
+ */
+function clearBand() {
+  d3.selectAll("#small-multiples .unfocus")
     .attr("class", "");
 }
 
