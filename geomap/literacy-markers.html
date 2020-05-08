@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>D3 Thematic Map with Markers</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link href="css/literacy-markers.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+  <header>
+    <h1>D3 Thematic Map with Markers</h1>
+  </header>
+
+  <main>
+
+    <section>
+      <h2>Literacy in New York State</h2>
+      <p>In this demo we examine a data set from the 2003 National Assesssment of Adult Literacy. We were curious about adult literacy rates in our home state of New York, and decided to approach this by looking at the <em>prose literacy</em> rate across New York counties. We decided to include only the proportion of adults with <em>Below Basic</em> level prose literacy, and chose a color palette that highlights those counties with the highest illiteracy rates. To get a sense for the population density in differen parts of the state, you can toggle the display of towns and cities, which are rendered as circles whose area is proportional to the population.</p>
+      <h3>Data Sources</h3>
+      <ul>
+        <li><cite><a href="https://nces.ed.gov/naal/estimates/StateEstimates.aspx">National Center for Education Statistics - State Estimates</a></cite></li>
+      </ul>
+      <h3>Coding resources</h3>
+      <ul>
+        <li><a href="https://www.d3indepth.com/geographic/">Geographic | D3 in Depth</a> by Peter Cook</li>
+        <li><a href="https://medium.com/@amy.degenaro/introduction-to-digital-cartography-geojson-and-d3-js-c27f066aa84">Introduction to Digital Cartography</a> by Amy Degenaro</li>
+        <li><a href="https://medium.com/@mbostock/command-line-cartography-part-1-897aa8f8ca2c">Introduction to Command-Line Cartography</a> by Mike Bostock</li>
+        <li><a href="https://colorbrewer2.org/">Color Brewer 2.0</a> by Cynthia Brewer, et al.</li>
+        <li><a href="https://github.com/d3/d3/wiki">D3 Wiki</a> Documentation</li>
+      </ul>
+    </section>
+
+    <section>
+      <figure id="choropleth">
+        <label><input type="checkbox" name="towns" /> Towns on</label>
+        <label><input type="checkbox" name="cities" /> Cities on</label>
+      </figure>
+    </section>
+
+  </main>
+
+  <script src="js/literacy-markers.js" type="module"></script>
+
+</body></html>

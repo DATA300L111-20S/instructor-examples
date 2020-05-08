@@ -1,0 +1,143 @@
+/* General styling for the whole page */
+
+html {
+  font-size: 120%;
+  font-family: 'EB Garamond', serif;
+  background-color: #eee;
+  overflow-y: scroll;
+}
+
+body {
+  padding: 0 2%;
+  margin: 0;
+}
+
+/* Layout the top-level containers */
+
+header {
+  text-align: center;
+}
+
+main {
+  display: flex;
+}
+
+section {
+  flex: 1;
+}
+
+section:nth-child(2) {
+  flex: 2;
+}
+
+h1,
+h2,
+h3 {
+  font-family: sans-serif;
+  color: #239;
+}
+
+figure {
+  margin: auto;
+  text-align: center;
+}
+
+/* Styling for the the map regions */
+path {
+  stroke-width: 1px;
+  stroke: #999;
+  fill: #eee;
+}
+
+/* Styling for foreground regions (the NYS counties) */
+path.fg {
+  stroke: #633;
+}
+
+path.fg:hover {
+  stroke-width: 3px;
+}
+
+/* General styling for the chart */
+
+#choropleth {
+  width: 90%;
+}
+
+#choropleth svg {
+  cursor: cursor;
+  margin: 2em;
+  border: 1px solid #999;
+  border-radius: 0.5em;
+  background-color: #bde;
+}
+
+/* Styling for the map legends */
+
+#choropleth text {
+  font-family: "Public Sans", sans-serif;
+  font-size: 10px;
+}
+
+#choropleth .legend text {
+  dominant-baseline: central;
+  text-anchor: end;
+}
+
+/* Styling for the map regions */
+
+#choropleth path {
+  stroke: #888;
+  stroke-width: 1px;
+}
+
+#choropleth path,
+#choropleth rect {
+  transition: opacity 1s;
+}
+
+#choropleth .marker {
+  width: 16px;
+  height: 16px;
+}
+
+#choropleth .marker {
+  dominant-baseline: hanging;
+  text-anchor: middle;
+}
+
+#choropleth .towns,
+#choropleth .cities {
+  visibility: hidden;
+}
+
+#choropleth .towns circle {
+  /* RGBA color */
+  fill: #00990033;
+  stroke: #00990066;
+}
+
+#choropleth .cities circle {
+  /* RGBA color */
+  fill: #00009933;
+  stroke: #00009966;
+}
+
+/* Media queries for responsive design */
+
+@media screen and (max-width: 960px) {
+
+  /* Switch to vertical flow for small screens */
+  main {
+    flex-direction: column;
+  }
+
+  section {
+    order: 2;
+  }
+
+  section:nth-child(2) {
+    order: 1;
+  }
+
+}
