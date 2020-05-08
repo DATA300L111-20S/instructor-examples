@@ -1,0 +1,142 @@
+/* Load custom fonts from Google Fonts library. */
+
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans&display=swap');
+
+/* General styling for the whole page */
+
+html {
+  font-size: 120%;
+  font-family: 'EB Garamond', serif;
+  background-color: #eee;
+  overflow-y: scroll;
+}
+
+body {
+  padding: 0 2%;
+  margin: 0;
+}
+
+/* Layout the top-level containers */
+
+header {
+  text-align: center;
+}
+
+/* Layout the columns of main content */
+
+section,
+footer {
+  padding: 0 2%;
+}
+
+main > figure {
+  padding: 1%;
+  background-color: #fff;
+  border-radius: 0.5em;
+}
+
+/* Style section headings for readability */
+
+h1,
+h2,
+h3 {
+  font-family: 'Public Sans', sans-serif;
+  color: #239;
+}
+
+/* Styling for the scatter plot */
+
+#whisker-plot svg {}
+
+#whisker-plot text {
+  font-family: "Public Sans", sans-serif;
+}
+
+#whisker-plot .y.axis .tick text {
+  font-size: 8px;
+}
+
+#whisker-plot .x.axis .tick text {
+  dominant-baseline: ideographic;
+  text-anchor: end;
+  transform: translate(0px, 12px) rotate(-90deg) translate(0px, -12px);
+}
+
+#whisker-plot .axis text.title {
+  text-anchor: middle;
+  fill: #000;
+}
+
+#whisker-plot .x.axis text.title {
+  dominant-baseline: ideographic;
+}
+
+#whisker-plot .y.axis text.title {
+  dominant-baseline: hanging;
+  transform: rotate(-90deg);
+}
+
+#whisker-plot text.reference {
+  dominant-baseline: middle;
+  text-anchor: end;
+  font-size: 8px;
+}
+
+#whisker-plot line.reference {
+  stroke-dasharray: 1, 3;
+  stroke-opacity: 0.3;
+}
+
+#whisker-plot .estimates line {
+  stroke-width: 3;
+}
+
+#whisker-plot .lowerbounds line,
+#whisker-plot .upperbounds line {
+  stroke-width: 1;
+}
+
+#whisker-plot .spreads line {
+  stroke-width: 1;
+}
+
+/* Styles for interactive highlighting */
+
+#whisker-plot rect:hover {
+  opacity: 1.0;
+  stroke-width: 3px;
+}
+
+#whisker-plot rect {
+  transition: opacity 0.25s, stroke-width 0.25s;
+}
+
+/* Media queries for responsive design */
+
+@media screen and (max-width: 960px) {
+
+  /* Switch to vertical flow for small screens */
+  main {
+    flex-direction: column;
+  }
+
+  /* Align heading to top of footer on small screen */
+  footer {
+    align-items: flex-start;
+    margin-top: 1em;
+  }
+
+  /* Revert to bullets for reability when vertical */
+  footer li {
+    display: list-item;
+    list-style-type: circle;
+  }
+
+  /* Maximize bar chart size by collapsing margins */
+  main > figure {
+    margin: 0;
+    margin-bottom: 2%;
+  }
+
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Box-and-Whisker Plot in D3v5</title>
+  <link href="css/boxnwhisker.css" rel="stylesheet" type="text/css" />
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+
+  <header>
+
+    <h1>Box-and-Whisker Plot in D3v5</h1>
+
+  </header>
+
+  <main>
+
+    <section>
+
+      <h2>Illiteracy in New York State</h2>
+      <p>In this demo we examine a data set from the 2003 National Assesssment of Adult Literacy. We were curious about adult literacy rates in our home state of New York, and decided to approach this by looking at the level of <em>prose literacy</em> across New York counties. We decided to include only the proportion of adults with <em>Below Basic</em> level prose literacy, called here "illiteracy", and chose a color palette that highlights those counties with the highest illiteracy rates.</p>
+      <p>In New York Sate, most counties have illiteracy rates below the national average of 14%. However, adult illiteracy across New York State as a whole is estimated to be significantly higher than the national average. Most of this can be explained by the high proportion of adults with below-basic literacy levels in the most populous urban counties in and around NYC.</p>
+      <p>This example demonstrates the construction of a box-and-whisker plot from tabular data loaded from a CSV file. Click anywhere on the chart to alternate between sorting the data by population (ascending) and county name (alphabetical).</p>
+
+    </section>
+
+    <figure id="whisker-plot">
+    </figure>
+
+  </main>
+
+  <footer>
+
+    <h3>Sources</h3>
+    <ul>
+      <li><cite><a href="https://nces.ed.gov/naal/estimates/StateEstimates.aspx">National Center for Education Statistics - State Estimates</a></cite></li>
+      <li><cite><a href="https://d3js.org">Data-Driven Documents (D3.js)</a></cite></li>
+    </ul>
+
+  </footer>
+
+  <script src="js/boxnwhisker.js" type="module"></script>
+</body></html>
